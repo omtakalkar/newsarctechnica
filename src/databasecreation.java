@@ -5,9 +5,9 @@ public class databasecreation {
    static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";  
    static final String DB_URL = "jdbc:mysql://";
 
-
-   static final String USER = "username";
-   static final String PASS = "password";
+   static final String USER = "om";
+   static final String PASS = "omtakalkar";
+   
    
    public static void main(String[] args) {
    Connection conn = null;
@@ -17,7 +17,7 @@ public class databasecreation {
       Class.forName("com.mysql.jdbc.Driver");
 
       System.out.println("Connecting to database...");
-      conn = DriverManager.getConnection(DB_URL, USER, PASS);
+      conn = DriverManager.getConnection(DB_URL,USER,PASS);
 
       System.out.println("Creating database...");
       stmt = conn.createStatement();
@@ -25,7 +25,8 @@ public class databasecreation {
       String sql = "CREATE DATABASE STUDENTS";
       stmt.executeUpdate(sql);
       System.out.println("Database created successfully...");
-   }catch(SQLException se)
+   }
+   catch(SQLException se)
    {
 	   se.printStackTrace();
    }

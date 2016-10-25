@@ -1,18 +1,22 @@
-	import java.io.BufferedReader;
+import java.io.BufferedReader;
 	import java.io.IOException;
 	import java.io.InputStreamReader;
 	import java.net.URL;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.StringTokenizer;
 	public class newsarstechnica 
 	{
-	  public static void main(String [] args)
+	  public static void main(String [] args) throws ClassNotFoundException, SQLException
 	  {
 	    System.out.println(readRSS("https://newsapi.org/v1/articles?source=ars-technica&sortBy=top&apiKey=a14d406312954941ad8812396933b9ef"));
 	  }
 
-	  public static String readRSS( String urlAddress)
+	  public static String readRSS( String urlAddress) throws ClassNotFoundException, SQLException
 	  {
 	  try
 	 {
@@ -57,7 +61,22 @@ import java.util.StringTokenizer;
             }
          }
          System.out.println(hm+"\n");
+         
+         Connection conn = null;
+ 		Statement stmt = null;
+ 		PreparedStatement preparedStatement = null;
+ 		
+ 		
+ 		
+ 		Class.forName("com.mysql.jdbc.Driver");
+		System.out.println("connecting to STUDENTS");
+		conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/STUDENTS","om","omtakalkar");
+		System.out.println("connected");
 		
+		
+		
+         
+         
 		in.close(); 
 	return sourceCode;
 	
