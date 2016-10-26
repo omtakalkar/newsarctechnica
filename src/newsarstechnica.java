@@ -16,6 +16,18 @@ import java.util.Map;
 	    System.out.println(readRSS("https://newsapi.org/v1/articles?source=ars-technica&sortBy=top&apiKey=a14d406312954941ad8812396933b9ef"));
 	  }
 
+	  private static final String tableName = "create table newsFeed ( "
+		      + "   id INT PRIMARY KEY, news VARCHAR(255)";
+	  
+	  public static Connection getConnection() throws Exception 
+	  {
+		
+		  Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/STUDENTS","om","omtakalkar");
+		  Class.forName("com.mysql.jdbc.Driver");
+		    return conn;
+			
+	  }
+	  
 	  public static String readRSS( String urlAddress) throws ClassNotFoundException, SQLException
 	  {
 	  try
@@ -60,32 +72,60 @@ import java.util.Map;
                hm.put(splitted[i], 1);
             }
          }
+        
          System.out.println(hm+"\n");
          
          Connection conn = null;
  		Statement stmt = null;
- 		PreparedStatement preparedStatement = null;
+ 		 try {
+ 		      conn = getConnection();
+ 		      stmt = conn.createStatement();
+ 		      stmt.executeUpdate(tableName);
+ 		      stmt.executeUpdate("insert into MyEmployees3(id, newsFeed) values(?, ?)");
+ 		      
+ 		      System.out.println("table created.");
+ 		    } 
+ 		 catch (ClassNotFoundException e) 
+ 		 {
+ 		      System.out.println(" failed to load MySQL driver.");
+ 		      e.printStackTrace();
+ 		 } 
+ 		 catch (SQLException e) 
+ 		 {
+ 		      System.out.println("error: failed to create a connection");
+ 		      e.printStackTrace();
+ 	     } 
+ 		 catch (Exception e)
+ 		 {
+ 		      System.out.println("other error:");
+ 		      e.printStackTrace();
+ 		 } 
  		
- 		
- 		
- 		Class.forName("com.mysql.jdbc.Driver");
-		System.out.println("connecting to STUDENTS");
-		conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/STUDENTS","om","omtakalkar");
-		System.out.println("connected");
+ 		      try
+ 		      {
+ 		        stmt.close();
+ 		        conn.close();        
+ 		      }
+ 		     catch (SQLException e)
+ 		      {
+ 		        e.printStackTrace();
+ 		      }
+		 
+ 		       
 		
-		
-		
-         
+	 		
+	  
+	
          
 		in.close(); 
 	return sourceCode;
 	
-	}
+	 }
 	catch(IOException ioe)
 	{
 	  System.out.println("error");
 	}
 	return urlAddress;
-	}
-	}  
+	}}
+	
 
