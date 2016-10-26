@@ -9,6 +9,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashMap;
 import java.util.Map;
+
+import com.mysql.jdbc.ResultSet;
 	public class newsarstechnica 
 	{
 	  public static void main(String [] args) throws ClassNotFoundException, SQLException
@@ -81,7 +83,13 @@ import java.util.Map;
  		      conn = getConnection();
  		      stmt = conn.createStatement();
  		      stmt.executeUpdate(tableName);
- 		      stmt.executeUpdate("insert into MyEmployees3(id, newsFeed) values(?, ?)");
+ 		      stmt.executeUpdate("insert into newsFeed(id, news) values(?, ?)");
+ 		     ResultSet rs;
+ 		     rs = (ResultSet) stmt.executeQuery("SELECT * from newsFeed");
+             while ( rs.next() ) {
+                 String lastName = rs.getString("news");
+                 System.out.println(lastName);
+             }
  		      
  		      System.out.println("table created.");
  		    } 
