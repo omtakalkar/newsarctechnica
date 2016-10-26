@@ -18,8 +18,7 @@ import com.mysql.jdbc.ResultSet;
 	    System.out.println(readRSS("https://newsapi.org/v1/articles?source=ars-technica&sortBy=top&apiKey=a14d406312954941ad8812396933b9ef"));
 	  }
 
-	  private static final String tableName = "create table newsFeed ( "
-		      + "   id INT PRIMARY KEY, news VARCHAR(255)";
+	  private static final String tableName = "create table newsFeed ( "+ "   id INT PRIMARY KEY, news VARCHAR(255)";
 	  
 	  public static Connection getConnection() throws Exception 
 	  {
@@ -83,7 +82,8 @@ import com.mysql.jdbc.ResultSet;
  		      conn = getConnection();
  		      stmt = conn.createStatement();
  		      stmt.executeUpdate(tableName);
- 		      stmt.executeUpdate("insert into newsFeed(id, news) values(?, ?)");
+ 		      stmt.executeUpdate("insert into newsFeed(id, news) values(1, 'newss')");
+ 		     conn.commit();
  		     ResultSet rs;
  		     rs = (ResultSet) stmt.executeQuery("SELECT * from newsFeed");
              while ( rs.next() ) {
@@ -108,7 +108,7 @@ import com.mysql.jdbc.ResultSet;
  		      System.out.println("other error:");
  		      e.printStackTrace();
  		 } 
- 		
+ 		finally{
  		      try
  		      {
  		        stmt.close();
@@ -118,7 +118,7 @@ import com.mysql.jdbc.ResultSet;
  		      {
  		        e.printStackTrace();
  		      }
-		 
+ 		}
  		       
 		
 	 		
