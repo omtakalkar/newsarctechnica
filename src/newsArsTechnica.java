@@ -86,6 +86,25 @@ import com.mysql.jdbc.ResultSet;
         
          System.out.println(hm+"\n");
          
+         String tagged = sourceCode;	
+  		int verbs=0;
+  		
+  		String[] tokens = tagged.split(" ");
+  		
+  		for ( String token : tokens)
+  		{
+              int equealsto = token.lastIndexOf("<>");
+              String realToken = token.substring(equealsto + 1);
+             
+             if ("VB".equals(realToken))
+             {
+                 verbs++;
+             }
+  		}
+  		System.out.println(String.format("verbs %d", verbs));
+         
+         
+         
          Connection conn = null;
  		Statement stmt = null;
  		 try {
@@ -132,22 +151,7 @@ import com.mysql.jdbc.ResultSet;
  		}
  		       
 		
- 		String tagged = sourceCode;	
- 		int verbs=0;
  		
- 		String[] tokens = tagged.split(" ");
- 		
- 		for (final String token : tokens)
- 		{
-            final int equealsto = token.lastIndexOf("<>");
-            final String realToken = token.substring(equealsto + 1);
-            
-            if ("VB".equals(realToken))
-            {
-                verbs++;
-            }
- 		}
- 		System.out.println(String.format("verbs %d", verbs));
          
 		in.close(); 
 	return sourceCode;
