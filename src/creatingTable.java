@@ -31,6 +31,21 @@ public class creatingTable
 			stmt.executeUpdate(sql);
 			System.out.println("table created");
 				 
+			String sqll = "INSERT INTO Registration " +
+	                   "VALUES (100, 'Zara', 'Ali', 18)";
+	      stmt.executeUpdate(sqll);
+	      sql = "INSERT INTO Registration " +
+	                   "VALUES (101, 'Mahnaz', 'Fatma', 25)";
+	      stmt.executeUpdate(sqll);
+	      sql = "INSERT INTO Registration " +
+	                   "VALUES (102, 'Zaid', 'Khan', 30)";
+	      stmt.executeUpdate(sqll);
+	      sql = "INSERT INTO Registration " +
+	                   "VALUES(103, 'Sumit', 'Mittal', 28)";
+	      stmt.executeUpdate(sqll);
+	      System.out.println("Inserted records into the table...");
+			
+			
 		}
 		catch(SQLException se)
 		{

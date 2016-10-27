@@ -7,6 +7,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -131,9 +132,22 @@ import com.mysql.jdbc.ResultSet;
  		}
  		       
 		
-	 		
-	  
-	
+ 		String tagged = sourceCode;	
+ 		int verbs=0;
+ 		
+ 		String[] tokens = tagged.split(" ");
+ 		
+ 		for (final String token : tokens)
+ 		{
+            final int equealsto = token.lastIndexOf("<>");
+            final String realToken = token.substring(equealsto + 1);
+            
+            if ("VB".equals(realToken))
+            {
+                verbs++;
+            }
+ 		}
+ 		System.out.println(String.format("verbs %d", verbs));
          
 		in.close(); 
 	return sourceCode;
