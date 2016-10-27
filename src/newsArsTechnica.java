@@ -15,31 +15,92 @@ import com.mysql.jdbc.ResultSet;
 	public class newsArsTechnica 
 	{
 		
-	  public static void main(String [] args) throws ClassNotFoundException, SQLException
+	
+ 
+	  
+	  static final String driver = "com.mysql.jdbc.Driver";
+	 static final  String url = "jdbc:mysql://localhost:3306/STUDENTS";
+	   
+	static final   String username = "om";
+	static final   String password = "omtakalkar";
+	  
+	  public static void main(String [] args) throws ClassNotFoundException
+	  {
 	  {
 	    System.out.println(readRSS("https://newsapi.org/v1/articles?source=ars-technica&sortBy=top&apiKey=a14d406312954941ad8812396933b9ef"));
 	  }
-
-	  private static final String tableName = "create table newsFeed ( "+ "   id INT PRIMARY KEY, news VARCHAR(255)";
 	  
-	 
-	  public static Connection getConnection() throws Exception 
-	  {
-		  System.out.println("1st");
+	  Connection conn = null;
+		Statement stmt = null;
+		 try {
+			 Class.forName(driver);
+		      conn = DriverManager.getConnection(url, username, password);
+		     
+		      stmt = conn.createStatement();
+		      String tableName = "create table newsFeed " + " (id INT PRIMARY KEY," +" news VARCHAR(255)";
+		     
+		    String insertintotable = "INSERT INTO newsFeed " +
+	                   "VALUES (1, 'newss')";
+		     
+		      stmt.executeUpdate(insertintotable);
+		      stmt.executeUpdate(tableName);
+		   //  conn.commit();
+		     ResultSet rs;
+		     rs = (ResultSet) stmt.executeQuery("SELECT * from newsFeed");
+           while ( rs.next() )
+           {
+               String arstechnicanews = rs.getString("news");
+               System.out.println(arstechnicanews);
+           }
+		      
 		  
-		  String driver = "com.mysql.jdbc.Driver";
-		    String url = "jdbc:mysql://localhost:3306/STUDENTS";
-		    String username = "om";
-		    String password = "omtakalkar";
-		    
-		  Connection conn = DriverManager.getConnection("url","username","password");
-		  Class.forName("driver");
-		  System.out.println("2nd");
-		    return conn;
-		   
+		    } 
+		 catch (ClassNotFoundException e) 
+		 {
+		      System.out.println(" failed to load MySQL driver.");
+		      e.printStackTrace();
+		 } 
+		 catch (SQLException e) 
+		 {
+		      System.out.println("error: failed to create a connection");
+		      e.printStackTrace();
+	     } 
+		 catch (Exception e)
+		 {
+		      System.out.println("other error:");
+		      e.printStackTrace();
+		 } 
+		finally
+		{
+		      try
+		      {
+		        stmt.close();
+		        conn.close();        
+		      }
+		     catch (SQLException e)
+		      {
+		        e.printStackTrace();
+		      }
+		}
+		       
 	  }
 	  
-	  public static String readRSS( String urlAddress) throws ClassNotFoundException, SQLException
+	  
+	//  public static Connection getConnection() throws Exception 
+	//  {
+		//  System.out.println("1st");
+		  
+		 
+		    
+		   
+	//	  Connection conn = DriverManager.getConnection(url,username,password);
+		 
+	//	  System.out.println("2nd");
+		 //   return conn;
+		   
+	//  }
+	  
+	  public static String readRSS( String urlAddress) 
 	  {
 	  try
 	 {
@@ -86,70 +147,15 @@ import com.mysql.jdbc.ResultSet;
         
          System.out.println(hm+"\n");
          
-         String tagged = sourceCode;	
-  		int verbs=0;
+      //   String tagged = sourceCode;	
   		
-  		String[] tokens = tagged.split(" ");
-  		
-  		for ( String token : tokens)
-  		{
-              int equealsto = token.lastIndexOf("<>");
-              String realToken = token.substring(equealsto + 1);
-             
-             if ("VB".equals(realToken))
-             {
-                 verbs++;
-             }
-  		}
-  		System.out.println(String.format("verbs %d", verbs));
+         
+         
+  	//	System.out.println(String.format("verbs %d", verbs));
          
          
          
-         Connection conn = null;
- 		Statement stmt = null;
- 		 try {
- 		      conn = getConnection();
- 		      stmt = conn.createStatement();
- 		      stmt.executeUpdate(tableName);
- 		      stmt.executeUpdate("insert into newsFeed(id, news) values(1, 'newss')");
- 		     conn.commit();
- 		     ResultSet rs;
- 		     rs = (ResultSet) stmt.executeQuery("SELECT * from newsFeed");
-             while ( rs.next() )
-             {
-                 String arstechnicanews = rs.getString("news");
-                 System.out.println(arstechnicanews);
-             }
- 		      
- 		      System.out.println("table created.");
- 		    } 
- 		 catch (ClassNotFoundException e) 
- 		 {
- 		      System.out.println(" failed to load MySQL driver.");
- 		      e.printStackTrace();
- 		 } 
- 		 catch (SQLException e) 
- 		 {
- 		      System.out.println("error: failed to create a connection");
- 		      e.printStackTrace();
- 	     } 
- 		 catch (Exception e)
- 		 {
- 		      System.out.println("other error:");
- 		      e.printStackTrace();
- 		 } 
- 		finally{
- 		      try
- 		      {
- 		        stmt.close();
- 		        conn.close();        
- 		      }
- 		     catch (SQLException e)
- 		      {
- 		        e.printStackTrace();
- 		      }
- 		}
- 		       
+        
 		
  		
          
