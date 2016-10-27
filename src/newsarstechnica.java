@@ -13,6 +13,7 @@ import java.util.Map;
 import com.mysql.jdbc.ResultSet;
 	public class newsarstechnica 
 	{
+		
 	  public static void main(String [] args) throws ClassNotFoundException, SQLException
 	  {
 	    System.out.println(readRSS("https://newsapi.org/v1/articles?source=ars-technica&sortBy=top&apiKey=a14d406312954941ad8812396933b9ef"));
@@ -20,13 +21,21 @@ import com.mysql.jdbc.ResultSet;
 
 	  private static final String tableName = "create table newsFeed ( "+ "   id INT PRIMARY KEY, news VARCHAR(255)";
 	  
+	 
 	  public static Connection getConnection() throws Exception 
 	  {
-		
-		  Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/STUDENTS","om","omtakalkar");
-		  Class.forName("com.mysql.jdbc.Driver");
+		  System.out.println("1st");
+		  
+		  String driver = "com.mysql.jdbc.Driver";
+		    String url = "jdbc:mysql://localhost:3306/STUDENTS";
+		    String username = "om";
+		    String password = "omtakalkar";
+		    
+		  Connection conn = DriverManager.getConnection("url","username","password");
+		  Class.forName("driver");
+		  System.out.println("2nd");
 		    return conn;
-			
+		   
 	  }
 	  
 	  public static String readRSS( String urlAddress) throws ClassNotFoundException, SQLException
