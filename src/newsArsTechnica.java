@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.mysql.jdbc.ResultSet;
-	public class newsarstechnica 
+	public class newsArsTechnica 
 	{
 		
 	  public static void main(String [] args) throws ClassNotFoundException, SQLException
@@ -95,9 +95,10 @@ import com.mysql.jdbc.ResultSet;
  		     conn.commit();
  		     ResultSet rs;
  		     rs = (ResultSet) stmt.executeQuery("SELECT * from newsFeed");
-             while ( rs.next() ) {
-                 String lastName = rs.getString("news");
-                 System.out.println(lastName);
+             while ( rs.next() )
+             {
+                 String arstechnicanews = rs.getString("news");
+                 System.out.println(arstechnicanews);
              }
  		      
  		      System.out.println("table created.");
