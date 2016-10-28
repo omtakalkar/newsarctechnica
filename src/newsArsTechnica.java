@@ -10,8 +10,11 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.StringTokenizer;
 
 import com.mysql.jdbc.ResultSet;
+
+import edu.stanford.nlp.tagger.maxent.MaxentTagger;
 	public class newsArsTechnica 
 	{
 		
@@ -26,24 +29,27 @@ import com.mysql.jdbc.ResultSet;
 	  
 	  public static void main(String [] args) throws ClassNotFoundException
 	  {
-	  {
-	    System.out.println(readRSS("https://newsapi.org/v1/articles?source=ars-technica&sortBy=top&apiKey=a14d406312954941ad8812396933b9ef"));
-	  }
+		  {
+			  System.out.println(readRSS("https://newsapi.org/v1/articles?source=ars-technica&sortBy=top&apiKey=a14d406312954941ad8812396933b9ef"));
+		  }
 	  
 	  Connection conn = null;
-		Statement stmt = null;
+		Statement stmt = null ;
 		 try {
 			 Class.forName(driver);
 		      conn = DriverManager.getConnection(url, username, password);
 		     
 		      stmt = conn.createStatement();
-		      String tableName = "create table newsFeed " + " (id INT PRIMARY KEY," +" news VARCHAR(255)";
+		 //     String tableName = "create table newsFeed(id int primary key,news varchar(255));";
 		     
-		    String insertintotable = "INSERT INTO newsFeed " +
-	                   "VALUES (1, 'newss')";
+		   
+		 //     stmt.executeUpdate(tableName);
 		     
+		    String insertintotable = "INSERT INTO newsFeed VALUES (5, 'arsT');";
+		    
+		    System.out.println(insertintotable);
 		      stmt.executeUpdate(insertintotable);
-		      stmt.executeUpdate(tableName);
+		      
 		   //  conn.commit();
 		     ResultSet rs;
 		     rs = (ResultSet) stmt.executeQuery("SELECT * from newsFeed");
@@ -155,6 +161,18 @@ import com.mysql.jdbc.ResultSet;
          
          
          
+         
+         MaxentTagger tagger = new  MaxentTagger ("taggers/english-left3words-distsim.tagger");
+         String a = sourceCode;
+         String tagged = tagger.tagString(a);
+         String taggedString = tagger.tagTokenizedString(tagged);
+         StringTokenizer st = new StringTokenizer(taggedString ," _ ");
+         while (st.hasMoreTokens()) 
+         {  
+             System.out.println(st.nextToken());  
+         }  
+       
+      //   System.out.println(taggedString+"\n");
         
 		
  		
