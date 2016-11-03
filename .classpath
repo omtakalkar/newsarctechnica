@@ -24,5 +24,6 @@
 	<classpathentry kind="lib" path="C:/Users/Om/Desktop/eclipse/simple/stanford-postagger-2015-12-09/stanford-postagger-3.6.0.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Om/Desktop/eclipse/simple/stanford-postagger-2015-12-09/stanford-postagger-3.6.0-javadoc.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Om/Desktop/eclipse/simple/stanford-postagger-2015-12-09/stanford-postagger-3.6.0-sources.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Om/Desktop/eclipse/New folder/jsoup-1.10.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
