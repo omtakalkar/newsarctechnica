@@ -24,46 +24,61 @@ import edu.stanford.nlp.tagger.maxent.MaxentTagger;
 	{
 			  
 	  static final String driver = "com.mysql.jdbc.Driver";
-	 static final  String url = "jdbc:mysql://localhost:3306/STUDENTS?useUnicode=yes&characterEncoding=UTF-8";
+	 static final  String url = "jdbc:mysql://localhost:3306/STUDENTS";
 	   
 	static final   String username = "om";
 	static final   String password = "omtakalkar";
+	
+static	Document doc = null;
 	  
 	  public static void main(String [] args) throws ClassNotFoundException , IOException
 	  {
 	  {
 		  
 	/*fetching news ******************************************************** from news site*****************	*/  
-		  Document doc = Jsoup.connect("http://arstechnica.com/").get();			
-			Element content = doc.getElementById("content");
-			Elements links = doc.select("a[href]");
+		  String[] siteURL = {"http://arstechnica.com/", "https://www.cnet.com/news/","http://www.digitaltrends.com/computing/"} ;
+		  int size = siteURL.length;
+		  for (int i=0; i<=size ; i++)
+			  
+		  {
+			//  System.out.println(siteURL[i]); 
+			  
+		   doc = Jsoup.connect(siteURL[i]).get();
+		   i++;
+		  }
+		  
+		  
+		  
+			//Element content = doc.getElementById("content");
+			//Elements links = doc.select("a[href]");
 			Elements elements = null;
 		//	Element document = null;
 			 elements=doc.select("p");
 		      String text=elements.text();
-		        System.out.println(text);
+		        System.out.println("\t" +text +"\n");
 
-			for (Element link : links) {
-			  String linkHref = link.attr("href");
-			  String linkText = link.text();
+		//	for (Element link : links)
+		//	{
+		//	  String linkHref = link.attr("href");
+		//	  String linkText = link.text();
 			 // System.out.println("Text::"+linkText+", URL::"+linkHref);
 			  //System.out.println(elements.html());
-			}
+	//		}
 			
 			
 		  // counting words ***********************************************************
 		  String a1 = text;
 			String[] splitted = a1.split(" ");
 	        Map<String, Integer> hm = new HashMap<String, Integer>();
-	        for (int i=0; i<splitted.length ; i++)
+	        for (int i1=0; i1<splitted.length ; i1++)
 	        {
-	            if (hm.containsKey(splitted[i])) 
+	            if (hm.containsKey(splitted[i1])) 
 	            {
-	               int cont = hm.get(splitted[i]);
-	               hm.put(splitted[i], cont + 1);
+	               int cont = hm.get(splitted[i1]);
+	               hm.put(splitted[i1], cont + 1);
 	            } else 
 	            {
-	               hm.put(splitted[i], 1);
+	               hm.put(splitted[i1], 1);
 	            }
 	         }
 	        
@@ -106,9 +121,9 @@ import edu.stanford.nlp.tagger.maxent.MaxentTagger;
 		     String query = text;
 		  //  String insertintotable = "INSERT INTO newsFeed VALUES (" + 11 + "','" + query + ");";
 		    PreparedStatement pstmt = conn.prepareStatement("INSERT INTO newsFeed VALUES (?,?,?)");
-		     pstmt.setInt(1, 14);
+		     pstmt.setInt(1, 17);
 		        pstmt.setString(2, query);
-		        pstmt.setString(3, "abcd");
+		        pstmt.setString(3, "abcdefg");
 
 		        pstmt.executeUpdate();
 		    
@@ -157,5 +172,5 @@ import edu.stanford.nlp.tagger.maxent.MaxentTagger;
 		       
 	  }
 	   
-
+	  
 	}}
