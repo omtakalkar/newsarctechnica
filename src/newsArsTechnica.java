@@ -43,13 +43,13 @@ import edu.stanford.nlp.tagger.maxent.MaxentTagger;
 	 
 		  String[] siteURL = {"http://arstechnica.com/", "https://www.cnet.com/news/","http://www.digitaltrends.com/computing/"} ;
 		  int size = siteURL.length;
-		  for (int i=0; i<=size ; i++)
+		  for (int i=0; i<=size  ; i++)
 			  
 		  {
 			//  System.out.println(siteURL[i]); 
 			  
 		   doc = Jsoup.connect(siteURL[i]).get();
-		//   i++;
+	// i++;
 		  
 		  
 		  
@@ -110,19 +110,14 @@ import edu.stanford.nlp.tagger.maxent.MaxentTagger;
  		 //     stmt.executeUpdate(tableName);
  		     
  		      String query =text;
- 		   PreparedStatement pstmt = conn.prepareStatement("INSERT INTO newsFeed VALUES (?,?)");
+ 		   PreparedStatement pstmt = conn.prepareStatement("INSERT INTO newsFeed(id,news) VALUES (?,?)");
 		     pstmt.setInt(1, 1);
 		        pstmt.setString(2, query);
-		        pstmt.executeUpdate();
+		       pstmt.executeUpdate();
 		        pstmt.setInt(1, 2);
 		        pstmt.setString(2, query);
-		        pstmt.executeUpdate();
-		        pstmt.setInt(1, 3);
-		        pstmt.setString(2, query);
-		        pstmt.executeUpdate();
- 		    
- 		   
- 		   //  conn.commit();
+		      pstmt.executeUpdate();
+
  		     ResultSet rs;
  		     rs = (ResultSet) stmt.executeQuery("SELECT * from newsFeed");
             while ( rs.next() )
