@@ -30,6 +30,7 @@ import edu.stanford.nlp.tagger.maxent.MaxentTagger;
 	static final   String password = "omtakalkar";
 	
 static	Document doc = null;
+static String text=null;
 	  
 	  public static void main(String [] args) throws ClassNotFoundException , IOException
 	  {
@@ -44,8 +45,8 @@ static	Document doc = null;
 			//  System.out.println(siteURL[i]); 
 			  
 		   doc = Jsoup.connect(siteURL[i]).get();
-		   i++;
-		  }
+		//   i++;
+		  
 		  
 		  
 		  
@@ -56,7 +57,7 @@ static	Document doc = null;
 			 elements=doc.select("p");
 		      String text=elements.text();
 		        System.out.println("\t" +text +"\n");
-
+		  }
 		//	for (Element link : links)
 		//	{
 		//	  String linkHref = link.attr("href");
