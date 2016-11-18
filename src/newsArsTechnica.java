@@ -10,6 +10,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Scanner;
@@ -24,14 +25,25 @@ import org.jsoup.select.Elements;
 
 import com.mysql.jdbc.ResultSet;
 
+import edu.stanford.nlp.dcoref.CorefCoreAnnotations.CorefChainAnnotation;
 import edu.stanford.nlp.ling.CoreAnnotations;
+import edu.stanford.nlp.ling.CoreAnnotations.NamedEntityTagAnnotation;
+import edu.stanford.nlp.ling.CoreAnnotations.PartOfSpeechAnnotation;
+import edu.stanford.nlp.ling.CoreAnnotations.SentencesAnnotation;
+import edu.stanford.nlp.ling.CoreAnnotations.TextAnnotation;
+import edu.stanford.nlp.ling.CoreAnnotations.TokensAnnotation;
+import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.neural.rnn.RNNCoreAnnotations;
 import edu.stanford.nlp.pipeline.Annotation;
+import edu.stanford.nlp.pipeline.CoreNLPProtos.CorefChain;
 import edu.stanford.nlp.pipeline.StanfordCoreNLP;
+import edu.stanford.nlp.semgraph.SemanticGraph;
+import edu.stanford.nlp.semgraph.SemanticGraphCoreAnnotations.CollapsedCCProcessedDependenciesAnnotation;
 import edu.stanford.nlp.sentiment.SentimentCoreAnnotations;
 import edu.stanford.nlp.sentiment.SentimentCoreAnnotations.SentimentAnnotatedTree;
 import edu.stanford.nlp.tagger.maxent.MaxentTagger;
 import edu.stanford.nlp.trees.Tree;
+import edu.stanford.nlp.trees.TreeCoreAnnotations.TreeAnnotation;
 import edu.stanford.nlp.util.CoreMap;
 	public class newsArsTechnica 
 	{
@@ -47,38 +59,6 @@ import edu.stanford.nlp.util.CoreMap;
 	static	Document doc = null;
 	static String text=null;
 	static  StanfordCoreNLP pipeline;	  
-	
-	public static void Sentiment() 
-	{
-		Properties props = new Properties();
-		props.setProperty("annotators", "tokenize, ssplit, parse, sentiment");
-		pipeline = new StanfordCoreNLP(props);
-	}
-	
-	public static int findSentiment(String list)
-	{
-
-        int mainSentiment = 0;
-        if (list != null && list.length() > 0) 
-        {
-            int longest = 0;
-            Annotation annotation = pipeline.process(list);
-            for (CoreMap sentence : annotation.get(CoreAnnotations.SentencesAnnotation.class))
-            {
-                Tree tree = sentence.get(SentimentAnnotatedTree.class);
-                int sentiment = RNNCoreAnnotations.getPredictedClass(tree);
-                String partText = sentence.toString();
-                if (partText.length() > longest) 
-                {
-                    mainSentiment = sentiment;
-                    longest = partText.length();
-                }
-
-            }
-        }
-        return mainSentiment;
-    }
-
 
 	
 	
@@ -111,19 +91,28 @@ import edu.stanford.nlp.util.CoreMap;
 		    
 		        
 		        
+
 		        
-		        ArrayList<String> news = new ArrayList<String>();
-				System.out.println("starting sentiment analysis");
-				news.add(text);
-				newsArsTechnica.Sentiment();
-				
-				for(String list : news)
-				{
-						System.out.println(list + " : " + newsArsTechnica.findSentiment(list));
-				}
-				System.exit(0);
 		        
-		      
+		        
+		        Properties props = new Properties();
+		        props.setProperty("annotators", "tokenize, ssplit, pos, lemma, parse, sentiment");
+		        StanfordCoreNLP pipeline = new StanfordCoreNLP(props);
+		       
+		        String news = text;
+		        Annotation document = new Annotation(news);
+		        pipeline.annotate(document);
+		        
+		        List<CoreMap> sentences = document.get(CoreAnnotations.SentencesAnnotation.class);
+		        for (CoreMap sentence : sentences) 
+		        {
+		            String sentiment = sentence.get(SentimentCoreAnnotations.SentimentClass.class);
+		            System.out.println(sentiment + "\t" + sentence);
+		        }
+		        
+		        
+		        
+		  
 		        
 		
 	  
