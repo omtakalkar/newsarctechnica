@@ -1,5 +1,6 @@
 import java.io.BufferedReader;
-	import java.io.IOException;
+import java.io.FileReader;
+import java.io.IOException;
 	import java.io.InputStreamReader;
 	import java.net.URL;
 import java.sql.Connection;
@@ -10,7 +11,11 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
+import java.util.Scanner;
 import java.util.StringTokenizer;
+import java.util.Vector;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -19,7 +24,15 @@ import org.jsoup.select.Elements;
 
 import com.mysql.jdbc.ResultSet;
 
+import edu.stanford.nlp.ling.CoreAnnotations;
+import edu.stanford.nlp.neural.rnn.RNNCoreAnnotations;
+import edu.stanford.nlp.pipeline.Annotation;
+import edu.stanford.nlp.pipeline.StanfordCoreNLP;
+import edu.stanford.nlp.sentiment.SentimentCoreAnnotations;
+import edu.stanford.nlp.sentiment.SentimentCoreAnnotations.SentimentAnnotatedTree;
 import edu.stanford.nlp.tagger.maxent.MaxentTagger;
+import edu.stanford.nlp.trees.Tree;
+import edu.stanford.nlp.util.CoreMap;
 	public class newsArsTechnica 
 	{
 		
@@ -33,8 +46,43 @@ import edu.stanford.nlp.tagger.maxent.MaxentTagger;
 	static final   String password = "omtakalkar";
 	static	Document doc = null;
 	static String text=null;
-		  
-	  
+	static  StanfordCoreNLP pipeline;	  
+	
+	public static void Sentiment() 
+	{
+		Properties props = new Properties();
+		props.setProperty("annotators", "tokenize, ssplit, parse, sentiment");
+		pipeline = new StanfordCoreNLP(props);
+	}
+	
+	public static int findSentiment(String list)
+	{
+
+        int mainSentiment = 0;
+        if (list != null && list.length() > 0) 
+        {
+            int longest = 0;
+            Annotation annotation = pipeline.process(list);
+            for (CoreMap sentence : annotation.get(CoreAnnotations.SentencesAnnotation.class))
+            {
+                Tree tree = sentence.get(SentimentAnnotatedTree.class);
+                int sentiment = RNNCoreAnnotations.getPredictedClass(tree);
+                String partText = sentence.toString();
+                if (partText.length() > longest) 
+                {
+                    mainSentiment = sentiment;
+                    longest = partText.length();
+                }
+
+            }
+        }
+        return mainSentiment;
+    }
+
+
+	
+	
+	
 	  public static void main(String [] args) throws ClassNotFoundException , IOException
 	  {
 	  {
@@ -51,9 +99,7 @@ import edu.stanford.nlp.tagger.maxent.MaxentTagger;
 		   doc = Jsoup.connect(siteURL[i]).get();
 	// i++;
 		  
-		  
-		  
-		  
+
 			//Element content = doc.getElementById("content");
 			//Elements links = doc.select("a[href]");
 			Elements elements = null;
@@ -61,7 +107,24 @@ import edu.stanford.nlp.tagger.maxent.MaxentTagger;
 			 elements=doc.select("p");
 		      String text=elements.text();
 		        System.out.println("\t" +text +"\n");
-		  
+		        
+		    
+		        
+		        
+		        
+		        ArrayList<String> news = new ArrayList<String>();
+				System.out.println("starting sentiment analysis");
+				news.add(text);
+				newsArsTechnica.Sentiment();
+				
+				for(String list : news)
+				{
+						System.out.println(list + " : " + newsArsTechnica.findSentiment(list));
+				}
+				System.exit(0);
+		        
+		      
+		        
 		
 	  
 	  String a1 = text;
@@ -110,14 +173,11 @@ import edu.stanford.nlp.tagger.maxent.MaxentTagger;
  		 //     stmt.executeUpdate(tableName);
  		     
  		      String query =text;
- 		   PreparedStatement pstmt = conn.prepareStatement("INSERT INTO newsFeed(id,news) VALUES (?,?)");
-		     pstmt.setInt(1, 1);
+ 		   PreparedStatement pstmt = conn.prepareStatement("INSERT IGNORE newsFeed(id,news) VALUES (?,?)");
+		     pstmt.setInt(1, 3);
 		        pstmt.setString(2, query);
 		       pstmt.executeUpdate();
-		        pstmt.setInt(1, 2);
-		        pstmt.setString(2, query);
-		      pstmt.executeUpdate();
-
+		      
  		     ResultSet rs;
  		     rs = (ResultSet) stmt.executeQuery("SELECT * from newsFeed");
             while ( rs.next() )
