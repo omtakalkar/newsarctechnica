@@ -1,3 +1,4 @@
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -48,9 +49,7 @@ import edu.stanford.nlp.util.CoreMap;
 	public class newsArsTechnica 
 	{
 		
-	
- 
-	  
+
 	  static final String driver = "com.mysql.jdbc.Driver";
 	 static final  String url = "jdbc:mysql://localhost:3306/STUDENTS";
 	   
@@ -65,7 +64,7 @@ import edu.stanford.nlp.util.CoreMap;
 	
 	  public static void main(String [] args) throws ClassNotFoundException , IOException
 	  {
-	  {
+		  {
 		  
 	  
 	 
@@ -74,71 +73,57 @@ import edu.stanford.nlp.util.CoreMap;
 		  for (int i=0; i<=size  ; i++)
 			  
 		  {
-			//  System.out.println(siteURL[i]); 
-			  
-		   doc = Jsoup.connect(siteURL[i]).get();
-	// i++;
-		  
-
-			//Element content = doc.getElementById("content");
-			//Elements links = doc.select("a[href]");
-			Elements elements = null;
-		//	Element document = null;
-			 elements=doc.select("p");
-		      String text=elements.text();
-		        System.out.println("\t" +text +"\n");
-		        
+			  // display news ******************************************
+			   doc = Jsoup.connect(siteURL[i]).get();
+				Elements elements = null;
+				 elements=doc.select("p");
+			      String text=elements.text();
+			        System.out.println("\t" +text +"\n");
+			        
 		    
-		        
-		        
-
-		        
-		        
-		        
+			        //display sentiment
 		        Properties props = new Properties();
 		        props.setProperty("annotators", "tokenize, ssplit, pos, lemma, parse, sentiment");
 		        StanfordCoreNLP pipeline = new StanfordCoreNLP(props);
 		       
 		        String news = text;
+		        String sentiment ;
 		        Annotation document = new Annotation(news);
 		        pipeline.annotate(document);
 		        
 		        List<CoreMap> sentences = document.get(CoreAnnotations.SentencesAnnotation.class);
 		        for (CoreMap sentence : sentences) 
 		        {
-		            String sentiment = sentence.get(SentimentCoreAnnotations.SentimentClass.class);
+		           sentiment = sentence.get(SentimentCoreAnnotations.SentimentClass.class);
 		            System.out.println(sentiment + "\t" + sentence);
 		        }
 		        
 		        
 		        
-		  
+		        //counting words*****************************
+		        String a1 = text;
+				String[] splitted = a1.split(" ");
+		        Map<String, Integer> hm = new HashMap<String, Integer>();
+		        for (int i1=0; i1<splitted.length ; i1++)
+		        {
+		            if (hm.containsKey(splitted[i1])) 
+		            {
+		               int cont = hm.get(splitted[i1]);
+		               hm.put(splitted[i1], cont + 1);
+		            } else 
+		            {
+		               hm.put(splitted[i1], 1);
+		            }
+		         }
 		        
-		
-	  
-	  String a1 = text;
-		String[] splitted = a1.split(" ");
-        Map<String, Integer> hm = new HashMap<String, Integer>();
-        for (int i1=0; i1<splitted.length ; i1++)
-        {
-            if (hm.containsKey(splitted[i1])) 
-            {
-               int cont = hm.get(splitted[i1]);
-               hm.put(splitted[i1], cont + 1);
-            } else 
-            {
-               hm.put(splitted[i1], 1);
-            }
-         }
-        
-         System.out.println(hm+"\n");
-		  
+		         System.out.println(hm+"\n");
+				  
 
          
-             
+           //noun and vers **************************
          MaxentTagger tagger = new  MaxentTagger ("taggers/english-left3words-distsim.tagger");
-     //    String a = text;
-         String tagged = tagger.tagString(a1);
+       // String abc = text;
+         String tagged = tagger.tagString(text);
          String taggedString = tagger.tagTokenizedString(tagged);
    /*      StringTokenizer st = new StringTokenizer(taggedString ," _ ");
          while (st.hasMoreTokens()) 
@@ -147,34 +132,32 @@ import edu.stanford.nlp.util.CoreMap;
          }  
       */ 
          System.out.println(taggedString+"\n");
+       
          
          
+         //insert into database *********************************
          Connection conn = null;
  		Statement stmt = null ;
  		 try {
- 			 Class.forName(driver);
- 		      conn = DriverManager.getConnection(url, username, password);
- 		     
- 		      stmt = conn.createStatement();
- 		 //     String tableName = "create table newsFeed(id int primary key,news varchar(255));";
- 		     
- 		   
- 		 //     stmt.executeUpdate(tableName);
- 		     
- 		      String query =text;
- 		   PreparedStatement pstmt = conn.prepareStatement("INSERT IGNORE newsFeed(id,news) VALUES (?,?)");
-		     pstmt.setInt(1, 3);
-		        pstmt.setString(2, query);
-		       pstmt.executeUpdate();
-		      
- 		     ResultSet rs;
- 		     rs = (ResultSet) stmt.executeQuery("SELECT * from newsFeed");
-            while ( rs.next() )
-            {
-                String arstechnicanews = rs.getString("news");
-                System.out.println(arstechnicanews);
-            }
- 		      
+	 			 Class.forName(driver);
+	 		      conn = DriverManager.getConnection(url, username, password);
+	 		     
+	 		      stmt = conn.createStatement();
+	 		      PreparedStatement pstmt = conn.prepareStatement("INSERT IGNORE newsFeed(id,news) VALUES (?,?)");
+	 		      pstmt.setInt(1, 4);
+			      pstmt.setString(2, text);
+			      pstmt.executeUpdate();
+			      // pstmt.setInt(1, 5);
+			      //  pstmt.setString(2,abc );
+			      
+	 		     ResultSet rs;
+	 		     rs = (ResultSet) stmt.executeQuery("SELECT * from newsFeed");
+	            while ( rs.next() )
+	            {
+	                String arstechnicanews = rs.getString("news");
+	                System.out.println(arstechnicanews);
+	            }
+	 		      
  		  
  		    } 
  		 catch (ClassNotFoundException e) 
