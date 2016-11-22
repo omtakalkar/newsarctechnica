@@ -74,11 +74,11 @@ import edu.stanford.nlp.util.CoreMap;
 			  
 		  {
 			  // display news ******************************************
-			   doc = Jsoup.connect(siteURL[i]).get();
-				Elements elements = null;
-				 elements=doc.select("p");
-			      String text=elements.text();
-			        System.out.println("\t" +text +"\n");
+			  	doc = Jsoup.connect(siteURL[i]).get();
+			  	Elements elements = null;
+				elements=doc.select("p");
+			    String text=elements.text();
+			    System.out.println("\t" +text +"\n");
 			        
 		    
 			        //display sentiment
@@ -125,12 +125,6 @@ import edu.stanford.nlp.util.CoreMap;
        // String abc = text;
          String tagged = tagger.tagString(text);
          String taggedString = tagger.tagTokenizedString(tagged);
-   /*      StringTokenizer st = new StringTokenizer(taggedString ," _ ");
-         while (st.hasMoreTokens()) 
-         {  
-             System.out.println(st.nextToken());  
-         }  
-      */ 
          System.out.println(taggedString+"\n");
        
          
@@ -144,19 +138,23 @@ import edu.stanford.nlp.util.CoreMap;
 	 		     
 	 		      stmt = conn.createStatement();
 	 		      PreparedStatement pstmt = conn.prepareStatement("INSERT IGNORE newsFeed(id,news) VALUES (?,?)");
-	 		      pstmt.setInt(1, 4);
+	 		      pstmt.setInt(1, 1);
 			      pstmt.setString(2, text);
 			      pstmt.executeUpdate();
-			      // pstmt.setInt(1, 5);
-			      //  pstmt.setString(2,abc );
+			     
 			      
-	 		     ResultSet rs;
-	 		     rs = (ResultSet) stmt.executeQuery("SELECT * from newsFeed");
-	            while ( rs.next() )
-	            {
-	                String arstechnicanews = rs.getString("news");
-	                System.out.println(arstechnicanews);
-	            }
+			       pstmt =conn.prepareStatement("INSERT IGNORE sentiment(sentiment,text) VALUES (?,?)");
+	 		      pstmt.setLong(1,1);
+			      pstmt.setString(2, text);
+			      pstmt.executeUpdate();
+	 		    
+			      ResultSet rs;
+			      rs = (ResultSet) stmt.executeQuery("SELECT * from newsFeed");
+		            while ( rs.next() )
+		            {
+		                String arstechnicanews = rs.getString("news");
+		                System.out.println(arstechnicanews);
+		            }
 	 		      
  		  
  		    } 
