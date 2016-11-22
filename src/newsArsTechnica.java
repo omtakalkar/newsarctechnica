@@ -87,7 +87,7 @@ import edu.stanford.nlp.util.CoreMap;
 		        StanfordCoreNLP pipeline = new StanfordCoreNLP(props);
 		       
 		        String news = text;
-		        String sentiment ;
+		        String sentiment = null ;
 		        Annotation document = new Annotation(news);
 		        pipeline.annotate(document);
 		        
@@ -122,7 +122,7 @@ import edu.stanford.nlp.util.CoreMap;
          
            //noun and vers **************************
          MaxentTagger tagger = new  MaxentTagger ("taggers/english-left3words-distsim.tagger");
-       // String abc = text;
+         // String abc = text;
          String tagged = tagger.tagString(text);
          String taggedString = tagger.tagTokenizedString(tagged);
          System.out.println(taggedString+"\n");
@@ -143,16 +143,16 @@ import edu.stanford.nlp.util.CoreMap;
 			      pstmt.executeUpdate();
 			     
 			      
-			       pstmt =conn.prepareStatement("INSERT IGNORE sentiment(sentiment,text) VALUES (?,?)");
+			      pstmt =conn.prepareStatement("INSERT IGNORE sentiment(sentiments,text) VALUES (?,?)");
 	 		      pstmt.setLong(1,1);
-			      pstmt.setString(2, text);
+			      pstmt.setString(2, sentiment);
 			      pstmt.executeUpdate();
 	 		    
 			      ResultSet rs;
-			      rs = (ResultSet) stmt.executeQuery("SELECT * from newsFeed");
+			      rs = (ResultSet) stmt.executeQuery("SELECT * from sentiment");
 		            while ( rs.next() )
 		            {
-		                String arstechnicanews = rs.getString("news");
+		                String arstechnicanews = rs.getString("text");
 		                System.out.println(arstechnicanews);
 		            }
 	 		      
