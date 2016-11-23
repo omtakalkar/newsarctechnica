@@ -10,13 +10,18 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Scanner;
+import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.Vector;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -46,6 +51,7 @@ import edu.stanford.nlp.tagger.maxent.MaxentTagger;
 import edu.stanford.nlp.trees.Tree;
 import edu.stanford.nlp.trees.TreeCoreAnnotations.TreeAnnotation;
 import edu.stanford.nlp.util.CoreMap;
+import edu.stanford.nlp.util.StringUtils;
 	public class newsArsTechnica 
 	{
 		
@@ -81,7 +87,7 @@ import edu.stanford.nlp.util.CoreMap;
 			    System.out.println("\t" +text +"\n");
 			        
 		    
-			        //display sentiment
+			        //display sentiment**********************************************
 		        Properties props = new Properties();
 		        props.setProperty("annotators", "tokenize, ssplit, pos, lemma, parse, sentiment");
 		        StanfordCoreNLP pipeline = new StanfordCoreNLP(props);
@@ -120,76 +126,99 @@ import edu.stanford.nlp.util.CoreMap;
 				  
 
          
-           //noun and vers **************************
-         MaxentTagger tagger = new  MaxentTagger ("taggers/english-left3words-distsim.tagger");
-         // String abc = text;
-         String tagged = tagger.tagString(text);
-         String taggedString = tagger.tagTokenizedString(tagged);
-         System.out.println(taggedString+"\n");
-       
+	           //noun and vers **************************
+	         MaxentTagger tagger = new  MaxentTagger ("taggers/english-left3words-distsim.tagger");
+	         // String abc = text;
+	         String tagged = tagger.tagString(text);
+	         String taggedString = tagger.tagTokenizedString(tagged);
+	         System.out.println(taggedString+"\n");
+	         
+	         
+	         
+	         
+	       
          
          
-         //insert into database *********************************
-         Connection conn = null;
- 		Statement stmt = null ;
- 		 try {
-	 			 Class.forName(driver);
-	 		      conn = DriverManager.getConnection(url, username, password);
-	 		     
-	 		      stmt = conn.createStatement();
-	 		      PreparedStatement pstmt = conn.prepareStatement("INSERT IGNORE newsFeed(id,news) VALUES (?,?)");
-	 		      pstmt.setInt(1, 1);
-			      pstmt.setString(2, text);
-			      pstmt.executeUpdate();
-			     
-			      
-			      pstmt =conn.prepareStatement("INSERT IGNORE sentiment(sentiments,text) VALUES (?,?)");
-	 		      pstmt.setLong(1,1);
-			      pstmt.setString(2, sentiment);
-			      pstmt.executeUpdate();
-	 		    
-			      ResultSet rs;
-			      rs = (ResultSet) stmt.executeQuery("SELECT * from sentiment");
-		            while ( rs.next() )
-		            {
-		                String arstechnicanews = rs.getString("text");
-		                System.out.println(arstechnicanews);
-		            }
-	 		      
+		         //insert into database *********************************
+		         Connection conn = null;
+		 		Statement stmt = null ;
+		 		java.sql.Timestamp date = new java.sql.Timestamp(new java.util.Date().getTime());
+		 		 try {
+					 			 Class.forName(driver);
+			 		      conn = DriverManager.getConnection(url, username, password);
+			 		     
+			 		      
+			 		   
+			 		      
+			 		      stmt = conn.createStatement();
+			 		      PreparedStatement pstmt = conn.prepareStatement("INSERT IGNORE newsFeed(id,news) VALUES (?,?)");
+			 		      pstmt.setInt(1, 1);
+					      pstmt.setString(2, text);
+					      pstmt.executeUpdate();
+					     
+					      
+					      pstmt =conn.prepareStatement("INSERT IGNORE sentiment(sentiments,text,register_date) VALUES (?,?,?)");
+			 		      pstmt.setLong(1,1);
+					      pstmt.setString(2, sentiment);
+					      pstmt.setTimestamp(3, date);
+					      
+					      
+				 		  
+				 		  pstmt.executeUpdate();
+					      ResultSet rs;
+					      rs = (ResultSet) stmt.executeQuery("SELECT * from sentiment");
+				            while ( rs.next() )
+				            {
+				                String arstechnicanews = rs.getString("text");
+				                System.out.println(arstechnicanews);
+				            }
+			 		      
  		  
- 		    } 
- 		 catch (ClassNotFoundException e) 
- 		 {
- 		      System.out.println(" failed to load MySQL driver.");
- 		      e.printStackTrace();
- 		 } 
- 		 catch (SQLException e) 
- 		 {
- 		      System.out.println("error: failed to create a connection");
- 		      e.printStackTrace();
- 	     } 
- 		 catch (Exception e)
- 		 {
- 		      System.out.println("other error:");
- 		      e.printStackTrace();
- 		 } 
- 		finally
- 		{
- 		      try
- 		      {
- 		        stmt.close();
- 		        conn.close();        
- 		      }
- 		     catch (SQLException e)
- 		      {
- 		        e.printStackTrace();
- 		      }
- 		}
+		 		    } 
+		 		 catch (ClassNotFoundException e) 
+		 		 {
+		 		      System.out.println(" failed to load MySQL driver.");
+		 		      e.printStackTrace();
+		 		 } 
+		 		 catch (SQLException e) 
+		 		 {
+		 		      System.out.println("error: failed to create a connection");
+		 		      e.printStackTrace();
+		 	     } 
+		 		 catch (Exception e)
+		 		 {
+		 		      System.out.println("other error:");
+		 		      e.printStackTrace();
+		 		 } 
+		 		finally
+		 		{
+		 		      try
+		 		      {
+		 		        stmt.close();
+		 		        conn.close();        
+		 		      }
+		 		     catch (SQLException e)
+		 		      {
+		 		        e.printStackTrace();
+		 		      }
+		 		}
  		       
+		 		//counting sentiments*********************************
+		 		List<String> list = new ArrayList<String>();
+		 		list.add(sentiment);
+		 		
+
+		 		Set<String> unique = new HashSet<String>(list);
+		 		for (String key : unique)
+		 		{
+		 			 System.out.println("counting positive negative words");
+		 		    System.out.println(key + ": " + Collections.frequency(list, key));
+		 		    
+		 		}
  	  }
  	  
  	  
 
-	  }
+		  }	  
 
 	}}
